@@ -25,5 +25,22 @@ services:
             - POSTGRES_USER=dbuser
             - POSTGRES_PASSWORD=pass
 
+    redis:
+        image: redis:7.0.11-alpine
+        hostname: redis
+
+    worker:
+        build:
+            context: .
+        hostname: worker
+        entrypoint: celery
+        command: -A scheduler.celery_app.app worker --loglevel=info
+        volumes:
+            - ./scheduler:/scheduler
+        links:
+            -   redis
+        depends_on:
+            -   redis
+
 
 

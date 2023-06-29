@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% load bootstrap4 %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block content %}
+    <h1 class="my-4">{{ title }}</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {% bootstrap_form form exclude='date_sw, time_sw' %}
+        <div class="row row-cols-lg-auto g-3 align-items-center col-12">
+            <div>
+                {% bootstrap_label 'Date:' %}
+            </div>
+            <div class="col">
+                {% bootstrap_field form.date_sw show_label=False %}
+            </div>
+            <div>
+                {% bootstrap_label 'Time:' %}
+            </div>
+            <div class="col">
+                {% bootstrap_field form.time_sw show_label=False %}
+            </div>
+            <div class="col">
+                {% bootstrap_button button_text button_type="submit" button_class="btn btn-primary" %}
+            </div>
+        </div>
+
+    </form>
+    <div>Choose your time: Monday - Friday, 10:00 - 16:00</div>
+    <hr>
+<!--    {% if form.errors %}-->
+<!--        <div class="errors">-->
+<!--        <p>Please correct the following errors:</p>-->
+<!--        <ul>-->
+<!--            {% for field_errors in form.errors.values %}-->
+<!--            {% for error in field_errors %}-->
+<!--                <li>{{ error }}</li>-->
+<!--            {% endfor %}-->
+<!--            {% endfor %}-->
+<!--        </ul>-->
+<!--        </div>-->
+<!--    {% endif %}-->
+    <br>
+    <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=2&bgcolor=%23ffffff&ctz=Europe%2FMoscow&showTitle=1&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=1&src=ZTYzYWZhNTZmZjZkYWIyMTVjYzIzM2NlOGQ3N2FkOTBlMmUzZWQzYjVlNWI5ZTA0ZGJkY2I0NTVmYWIxZjQ3Y0Bncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23616161" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+
+{% endblock %}
