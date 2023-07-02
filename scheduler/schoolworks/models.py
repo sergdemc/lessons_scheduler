@@ -62,6 +62,13 @@ class SchoolWork(models.Model):
         verbose_name='Confirmed'
     )
 
+    event_id = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name='Event ID'
+    )
+
     def save(self, *args, **kwargs):
         if self.pk:
             original_schoolwork = SchoolWork.objects.get(pk=self.pk)
@@ -77,14 +84,36 @@ class SchoolWork(models.Model):
                         'timeZone': 'UTC',
                     },
                 }
-                calendar_obj.add_event(GOOGLE_CALENDAR, event_data)
+                event = calendar_obj.add_event(GOOGLE_CALENDAR, event_data)
+                self.event_id = event['id']
 
                 reminder_task = send_email_reminder.apply_async(
                     (self.pk,),
-                    eta=datetime.combine(self.date_sw, self.time_sw) - timedelta(hours=1)
+                    eta=datetime.combine(self.date_sw, self.time_sw) - timedelta(hours=24)
                 )
 
                 # Store the task ID
+                # self.reminder_task_id = reminder_task.id
+
+            elif original_schoolwork.date_sw != self.date_sw or original_schoolwork.time_sw != self.time_sw:
+                event_data = {
+                    'summary': f'{self.type_sw.capitalize()} for user: {self.user}',
+                    'start': {
+                        'dateTime': datetime.combine(self.date_sw, self.time_sw).isoformat(),
+                        'timeZone': 'UTC',
+                    },
+                    'end': {
+                        'dateTime': (datetime.combine(self.date_sw, self.time_sw) + timedelta(hours=1)).isoformat(),
+                        'timeZone': 'UTC',
+                    },
+                }
+                calendar_obj.update_event(GOOGLE_CALENDAR, self.event_id, event_data)
+
+                reminder_task = send_email_reminder.apply_async(
+                    (self.pk,),
+                    eta=datetime.combine(self.date_sw, self.time_sw) - timedelta(hours=24)
+                )
+
                 # self.reminder_task_id = reminder_task.id
 
         return super(SchoolWork, self).save(*args, **kwargs)

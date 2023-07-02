@@ -1,6 +1,5 @@
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from scheduler.settings import GOOGLE_CALENDAR
 
 
 class GoogleCalendar:
@@ -28,6 +27,9 @@ class GoogleCalendar:
     def get_events(self, calendar_id):
         return self.service.events().list(calendarId=calendar_id).execute()
 
+    def update_event(self, calendar_id, event_id, updated_event):
+        return self.service.events().update(calendarId=calendar_id, eventId=event_id, body=updated_event).execute()
+
 
 calendar_obj = GoogleCalendar()
 # events = calendar_obj.get_events(GOOGLE_CALENDAR)
@@ -46,15 +48,15 @@ calendar_obj = GoogleCalendar()
 #     'timeZone': 'UTC',
 #   },
 #   # 'attendees': [
-  #   {'email': 'hb13718@gmail.com'},
-  # ],
-  # 'reminders': {
-  #   'useDefault': False,
-  #   'overrides': [
-  #     {'method': 'email', 'minutes': 24 * 60},
-  #     {'method': 'popup', 'minutes': 10},
-  #   ],
-  # },
+#   {'email': 'hb13718@gmail.com'},
+# ],
+# 'reminders': {
+#   'useDefault': False,
+#   'overrides': [
+#     {'method': 'email', 'minutes': 24 * 60},
+#     {'method': 'popup', 'minutes': 10},
+#   ],
+# },
 # }
 
 # calendar_obj.add_event(GOOGLE_CALENDAR, event)
