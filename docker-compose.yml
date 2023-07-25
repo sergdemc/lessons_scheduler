@@ -38,10 +38,10 @@ services:
         volumes:
             - ./scheduler:/scheduler
         links:
-            -   redis
+            - redis
         depends_on:
-            -   redis
-            -  database
+            - redis
+            - database
         environment:
             - DB_HOST=database
             - DB_NAME=dbname
